@@ -10,6 +10,23 @@ import java.time.LocalDate;
  */
 public class Task {
 
+    public static enum TaskStatus {
+        READY("Ready"),
+        END("End"),
+        PUT("Put");
+
+        private final String text;
+
+        TaskStatus(String text) {
+            this.text = text;
+        }
+
+        @Override
+        public String toString(){
+            return text;
+        }
+    }
+
     private final StringProperty taskName;
     private final StringProperty taskStatus;
     private final StringProperty taskDescription;
@@ -87,5 +104,20 @@ public class Task {
 
     public void setTaskDate(LocalDate taskDate) {
         this.taskDate.set(taskDate);
+    }
+
+    @Override
+    public String toString() {
+        return getTaskName() + "/" +
+                getTaskStatus() + "/" +
+                getTaskDescription() + "/" +
+                getTaskContacts() + "/" +
+                dateToString(getTaskDate());
+    }
+
+    private String dateToString(LocalDate localDate) {
+        return "" + localDate.getDayOfMonth() + "," +
+                localDate.getMonthValue() + "," +
+                localDate.getYear();
     }
 }

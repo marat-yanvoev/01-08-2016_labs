@@ -1,6 +1,7 @@
 package sample.view;
 
 import javafx.beans.property.IntegerProperty;
+import javafx.event.EventType;
 import javafx.fxml.FXML;
 import javafx.scene.control.Label;
 import javafx.scene.control.TableColumn;
@@ -46,11 +47,16 @@ public class TaskOverviewController {
         taskTable.getSelectionModel().selectedItemProperty().addListener(
                 ((observable, oldValue, newValue) -> showTaskDetail(newValue))
         );
+
     }
 
     public void setMain(Main main) {
         this.main = main;
         taskTable.setItems(main.getTaskData());
+    }
+
+    public TableView<Task> getTaskTable() {
+        return taskTable;
     }
 
     private void showTaskDetail(Task task){

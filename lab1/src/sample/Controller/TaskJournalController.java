@@ -1,5 +1,6 @@
 package sample.Controller;
 
+import javafx.collections.ObservableList;
 import sample.Controller.Interface.FileDataBase;
 import sample.Controller.Interface.TaskJournal;
 import sample.model.Task;
@@ -56,6 +57,11 @@ public class TaskJournalController implements TaskJournal{
 
     }
 
+    /**
+     * Создает колекцию объектов задач из Колекции строк
+     * полченных из файла.
+     * @return - Колекцию объектов {@link Task}
+     */
     @Override
     public List<Task> getTaskList() {
         List<String> lines = fileDB.readFile();
@@ -69,7 +75,28 @@ public class TaskJournalController implements TaskJournal{
         return taskList;
     }
 
+    /**
+     * Преобразует Колекцию объектов в Колекцию строк этих объектов.
+     * toString у Task переопределен.
+     *
+     * @param taskList
+     * @return
+     */
+    @Override
+    public List<String> createList(ObservableList<Task> taskList) {
+        List<String> stringList = new ArrayList<>();
+        for (Task task : taskList) {
+            stringList.add(task.toString());
+        }
 
+        return stringList;
+    }
+
+    /**
+     * Преобразует строку со временем в объект LocalDate
+     * @param value
+     * @return
+     */
     private LocalDate toLocalDate(String value){
         String[] date = value.split(",");
         int year = Integer.parseInt(date[2]);
@@ -78,4 +105,5 @@ public class TaskJournalController implements TaskJournal{
 
         return LocalDate.of(year, month, day);
     }
+
 }

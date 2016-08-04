@@ -19,6 +19,8 @@ public class FileDataBaseController implements FileDataBase {
 
     private final String fileName;
 
+    private File f;
+
     public static FileDataBaseController getInstance() {
         FileDataBaseController localInstance = instance;
         if (localInstance == null) {
@@ -32,9 +34,12 @@ public class FileDataBaseController implements FileDataBase {
         return localInstance;
     }
 
+    /**
+     * Создает файл, если не создан
+     */
     private FileDataBaseController() {
         fileName = "data.tm";
-        File f = new File(fileName);
+        f = new File(fileName);
         try {
             if(!f.exists()) {
                 f.createNewFile();
@@ -44,6 +49,12 @@ public class FileDataBaseController implements FileDataBase {
         }
     }
 
+    /**
+     * Читает файл по строкам
+     *
+     * @return - Возвращает Колекцию строк из файла
+     *          каждая строка содержит информацию о задачи.
+     */
     @Override
     public List<String> readFile() {
         List<String> lines = new ArrayList<>();
@@ -55,11 +66,17 @@ public class FileDataBaseController implements FileDataBase {
         return lines;
     }
 
+    /**
+     * Записывает строки в файл
+     *
+     * @param lines - Колекция строк. Создается с помощью метода createList.
+     */
     @Override
     public void writeFile(List<String> lines) {
         try {
+            f.delete();
             Path path = Files.write(Paths.get(fileName), lines, StandardCharsets.UTF_8,
-                                    StandardOpenOption.CREATE, StandardOpenOption.APPEND);
+                                    StandardOpenOption.CREATE);
         } catch (IOException e) {
             e.printStackTrace();
         }

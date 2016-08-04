@@ -5,8 +5,7 @@
 <?import java.lang.*?>
 <?import javafx.scene.layout.*?>
 
-
-<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="320.0" prefWidth="400.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1">
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="320.0" prefWidth="400.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="sample.view.AddAndEditTaskDialogController">
    <children>
       <GridPane prefWidth="400.0">
         <columnConstraints>
@@ -25,17 +24,17 @@
             <Label text="Date" GridPane.rowIndex="1" />
             <Label text="Descriptions" GridPane.rowIndex="3" />
             <Label text="Contacts" GridPane.rowIndex="4" />
-            <TextField GridPane.columnIndex="1" />
-            <TextArea prefHeight="200.0" prefWidth="200.0" GridPane.columnIndex="1" GridPane.rowIndex="3" />
-            <TextField GridPane.columnIndex="1" GridPane.rowIndex="4" />
-            <DatePicker GridPane.columnIndex="1" GridPane.rowIndex="1" />
+            <TextField fx:id="taskName" GridPane.columnIndex="1" />
+            <TextArea fx:id="taskDescription" prefHeight="200.0" prefWidth="200.0" GridPane.columnIndex="1" GridPane.rowIndex="3" />
+            <TextField fx:id="taskContacts" GridPane.columnIndex="1" GridPane.rowIndex="4" />
+            <DatePicker fx:id="taskDate" GridPane.columnIndex="1" GridPane.rowIndex="1" />
             <Label text="Time" GridPane.rowIndex="2" />
             <HBox alignment="CENTER_LEFT" prefHeight="100.0" prefWidth="200.0" spacing="10.0" GridPane.columnIndex="1" GridPane.rowIndex="2">
                <children>
-                  <TextField prefWidth="30.0" />
+                  <TextField fx:id="hour" prefWidth="30.0" />
                   <Label text="h" />
                   <Label text=":" />
-                  <TextField prefWidth="30.0" />
+                  <TextField fx:id="minute" prefWidth="30.0" />
                   <Label text="m" />
                </children>
             </HBox>
@@ -46,8 +45,8 @@
       </GridPane>
       <HBox layoutX="21.0" layoutY="261.0" spacing="20.0" AnchorPane.bottomAnchor="10.0" AnchorPane.rightAnchor="10.0">
          <children>
-            <Button layoutX="21.0" layoutY="261.0" mnemonicParsing="false" text="Add" />
-            <Button layoutX="73.0" layoutY="261.0" mnemonicParsing="false" text="Cancel" />
+            <Button layoutX="21.0" layoutY="261.0" mnemonicParsing="false" onAction="#handleAdd" text="Add" />
+            <Button layoutX="73.0" layoutY="261.0" mnemonicParsing="false" onAction="#handleCancel" text="Cancel" />
          </children>
       </HBox>
    </children>

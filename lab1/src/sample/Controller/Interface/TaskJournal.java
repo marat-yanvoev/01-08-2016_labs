@@ -1,5 +1,6 @@
 package sample.Controller.Interface;
 
+import javafx.collections.ObservableList;
 import sample.model.Task;
 
 import java.util.List;
@@ -13,4 +14,5 @@ public interface TaskJournal {
     public void put(Task task);
     public void complete(Task task);
     public List<Task> getTaskList();
+    public List<String> createList (ObservableList<Task> taskList);
 }
