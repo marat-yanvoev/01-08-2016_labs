@@ -10,6 +10,7 @@ import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.BorderPane;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
+import sample.Controller.AlertingSystemController;
 import sample.Controller.Interface.TaskJournal;
 import sample.Controller.TaskJournalController;
 import sample.model.Task;
@@ -41,6 +42,11 @@ public class Main extends Application {
 
         initRootLayout();
         showTaskOverview();
+
+        AlertingSystemController asc = AlertingSystemController.getInstance();
+        asc.setObservableList(getTaskData());
+        asc.showSysTray();
+        asc.runAlertingSystem();
     }
 
     /**
@@ -59,6 +65,8 @@ public class Main extends Application {
             RootLayoutController controller = loader.getController();
             controller.setRootStage(primaryStage);
             controller.setMain(this);
+
+            AlertingSystemController.getInstance().setRootStage(primaryStage);
 
         } catch (IOException e) {
             e.printStackTrace();

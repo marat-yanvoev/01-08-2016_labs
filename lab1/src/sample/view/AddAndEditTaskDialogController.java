@@ -53,6 +53,8 @@ public class AddAndEditTaskDialogController {
         taskDate.setValue(task.getTaskDate());
         taskDescription.setText(task.getTaskDescription());
         taskContacts.setText(task.getTaskContacts());
+        hour.setText("" + task.getTaskHour());
+        minute.setText("" + task.getTaskMin());
     }
 
     public boolean isOkClicked(){
@@ -67,6 +69,8 @@ public class AddAndEditTaskDialogController {
             task.setTaskDescription(taskDescription.getText());
             task.setTaskContacts(taskContacts.getText());
             task.setTaskStatus(Task.TaskStatus.READY.toString());
+            task.setTaskHour(hour.getText());
+            task.setTaskMin(minute.getText());
 
             okClicked = true;
             addTaskStage.close();

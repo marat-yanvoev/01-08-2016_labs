@@ -5,7 +5,9 @@ import javafx.scene.control.Menu;
 import javafx.scene.control.MenuBar;
 import javafx.scene.control.MenuItem;
 import javafx.stage.Stage;
+import sample.Controller.AlertingSystemController;
 import sample.Controller.FileDataBaseController;
+import sample.Controller.Interface.AlertingSystem;
 import sample.Controller.Interface.FileDataBase;
 import sample.Controller.Interface.TaskJournal;
 import sample.Controller.TaskJournalController;
@@ -40,17 +42,20 @@ public class RootLayoutController {
     private Main main;
     private FileDataBase fileDB;
     private TaskJournal taskJournal;
+    private AlertingSystem alertingSystem;
 
     public RootLayoutController() {}
 
     public void initialize() {
         fileDB = FileDataBaseController.getInstance();
         taskJournal = TaskJournalController.getInstance();
+        alertingSystem = AlertingSystemController.getInstance();
     }
 
     @FXML
     private void handleClose(){
-        rootStage.close();
+        rootStage.hide();
+        //AlertingSystemController.getInstance().exitTray();
     }
 
     @FXML
@@ -60,17 +65,20 @@ public class RootLayoutController {
         if(isClicked) {
             main.getTaskData().add(task);
             fileDB.writeFile(taskJournal.createList(main.getTaskData()));
+
         }
     }
 
     @FXML
     private void handleEdit() {
         Task task = main.getTaskTable().getSelectionModel().getSelectedItem();
+
         if(task != null) {
             boolean isClicked = main.showAddTaskDialog(task);
             if(isClicked) {
                 main.getTaskTable().refresh();
                 fileDB.writeFile(taskJournal.createList(main.getTaskData()));
+                alertingSystem.removeTaskTimer(task);
             }
         }
     }
@@ -89,6 +97,10 @@ public class RootLayoutController {
 
     public void setRootStage(Stage rootStage){
         this.rootStage = rootStage;
+    }
+
+    public Stage getRootStage() {
+        return rootStage;
     }
 
     public void setMain(Main main) {

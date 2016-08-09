@@ -69,7 +69,7 @@ public class TaskJournalController implements TaskJournal{
             String[] value = line.split("/");
 
             taskList.add(new Task(value[0], value[1],
-                    value[2], value[3], toLocalDate(value[4])));
+                    value[2], value[3], toLocalDate(value[4]), value[5], value[6]));
         }
 
         return taskList;

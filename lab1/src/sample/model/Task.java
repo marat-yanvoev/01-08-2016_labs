@@ -1,14 +1,17 @@
 package sample.model;
 
 import javafx.beans.property.*;
-import sun.util.resources.LocaleData;
+import sample.Controller.AlertingSystemController;
 
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.time.LocalDate;
+import java.util.TimerTask;
 
 /**
  * Created by petka on 01.08.2016.
  */
-public class Task {
+public class Task extends TimerTask {
 
     public static enum TaskStatus {
         READY("Ready"),
@@ -32,18 +35,31 @@ public class Task {
     private final StringProperty taskDescription;
     private final StringProperty taskContacts;
     private final ObjectProperty<LocalDate> taskDate;
+    private final StringProperty taskHour;
+    private final StringProperty taskMin;
 
     /**
      * Конструктор по умолчанию
      */
-    public Task(){ this(null, null, null, null, null); }
+    public Task(){ this(null, null, null, null, null, null, null); }
 
-    public Task(String taskName, String taskStatus, String taskDescription, String taskContacts, LocalDate taskDate) {
+    @Override
+    public void run() {
+
+        AlertingSystemController.getInstance().showMessage(
+                getTaskName(), getTaskDescription());
+
+    }
+
+    public Task(String taskName, String taskStatus, String taskDescription, String taskContacts,
+                LocalDate taskDate, String taskHour, String taskMin) {
         this.taskDate = new SimpleObjectProperty<LocalDate>(taskDate);
         this.taskContacts = new SimpleStringProperty(taskContacts);
         this.taskDescription = new SimpleStringProperty(taskDescription);
         this.taskStatus = new SimpleStringProperty(taskStatus);
         this.taskName = new SimpleStringProperty(taskName);
+        this.taskHour = new SimpleStringProperty(taskHour);
+        this.taskMin = new SimpleStringProperty(taskMin);
     }
 
     public String getTaskName() {
@@ -106,13 +122,39 @@ public class Task {
         this.taskDate.set(taskDate);
     }
 
+    public int getTaskHour() {
+        return taskHour.get() == null ? 0 : Integer.parseInt(taskHour.get());
+    }
+
+    public StringProperty taskHourProperty() {
+        return taskHour;
+    }
+
+    public void setTaskHour(String taskHour) {
+        this.taskHour.set(taskHour);
+    }
+
+    public int getTaskMin() {
+        return taskMin.get() == null ? 0 : Integer.parseInt(taskMin.get());
+    }
+
+    public StringProperty taskMinProperty() {
+        return taskMin;
+    }
+
+    public void setTaskMin(String taskMin) {
+        this.taskMin.set(taskMin);
+    }
+
     @Override
     public String toString() {
         return getTaskName() + "/" +
                 getTaskStatus() + "/" +
                 getTaskDescription() + "/" +
                 getTaskContacts() + "/" +
-                dateToString(getTaskDate());
+                dateToString(getTaskDate()) + "/" +
+                getTaskHour() + "/" +
+                getTaskMin();
     }
 
     private String dateToString(LocalDate localDate) {
