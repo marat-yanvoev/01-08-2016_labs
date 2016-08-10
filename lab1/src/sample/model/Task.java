@@ -2,6 +2,7 @@ package sample.model;
 
 import javafx.beans.property.*;
 import sample.Controller.AlertingSystemController;
+import sample.Controller.Interface.AlertingSystem;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -11,7 +12,7 @@ import java.util.TimerTask;
 /**
  * Created by petka on 01.08.2016.
  */
-public class Task extends TimerTask {
+public abstract class Task {
 
     public static enum TaskStatus {
         READY("Ready"),
@@ -38,22 +39,17 @@ public class Task extends TimerTask {
     private final StringProperty taskHour;
     private final StringProperty taskMin;
 
+    protected AlertingSystem alertingSystem = AlertingSystemController.getInstance();
+
     /**
      * Конструктор по умолчанию
      */
-    public Task(){ this(null, null, null, null, null, null, null); }
+    public Task() { this(null, null, null, null, null, null, null); }
 
-    @Override
-    public void run() {
-
-        AlertingSystemController.getInstance().showMessage(
-                getTaskName(), getTaskDescription());
-
-    }
 
     public Task(String taskName, String taskStatus, String taskDescription, String taskContacts,
-                LocalDate taskDate, String taskHour, String taskMin) {
-        this.taskDate = new SimpleObjectProperty<LocalDate>(taskDate);
+                String taskDate, String taskHour, String taskMin) {
+        this.taskDate = new SimpleObjectProperty<LocalDate>(toLocalDate(taskDate));
         this.taskContacts = new SimpleStringProperty(taskContacts);
         this.taskDescription = new SimpleStringProperty(taskDescription);
         this.taskStatus = new SimpleStringProperty(taskStatus);
@@ -155,6 +151,16 @@ public class Task extends TimerTask {
                 dateToString(getTaskDate()) + "/" +
                 getTaskHour() + "/" +
                 getTaskMin();
+    }
+
+    private LocalDate toLocalDate(String value){
+        if (value == null) { return null; }
+        String[] date = value.split(",");
+        int year = Integer.parseInt(date[2]);
+        int month = Integer.parseInt(date[1]);
+        int day = Integer.parseInt(date[0]);
+
+        return LocalDate.of(year, month, day);
     }
 
     private String dateToString(LocalDate localDate) {

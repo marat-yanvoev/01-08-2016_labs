@@ -1,12 +1,12 @@
 package sample.view;
 
-import javafx.beans.property.IntegerProperty;
-import javafx.event.EventType;
 import javafx.fxml.FXML;
 import javafx.scene.control.Label;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextArea;
+import sample.Controller.Interface.TaskJournal;
+import sample.Controller.TaskJournalController;
 import sample.Main;
 import sample.model.Task;
 
@@ -32,6 +32,7 @@ public class TaskOverviewController {
     private Label taskContacts;
 
     private Main main;
+    private TaskJournal taskJournal;
 
     public TaskOverviewController() {
 
@@ -39,6 +40,8 @@ public class TaskOverviewController {
 
     @FXML
     private void initialize(){
+        taskJournal = TaskJournalController.getInstance();
+        taskTable.setItems(taskJournal.getTaskList());
         taskName.setCellValueFactory(cellData -> cellData.getValue().taskNameProperty());
         taskDate.setCellValueFactory(cellData -> cellData.getValue().taskDateProperty());
 
@@ -52,7 +55,6 @@ public class TaskOverviewController {
 
     public void setMain(Main main) {
         this.main = main;
-        taskTable.setItems(main.getTaskData());
     }
 
     public TableView<Task> getTaskTable() {

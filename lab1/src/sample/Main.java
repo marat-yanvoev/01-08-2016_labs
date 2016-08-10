@@ -1,7 +1,6 @@
 package sample;
 
 import javafx.application.Application;
-import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
@@ -11,6 +10,7 @@ import javafx.scene.layout.BorderPane;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import sample.Controller.AlertingSystemController;
+import sample.Controller.Database;
 import sample.Controller.Interface.TaskJournal;
 import sample.Controller.TaskJournalController;
 import sample.model.Task;
@@ -25,14 +25,16 @@ public class Main extends Application {
     private Stage primaryStage;
     private BorderPane rootLayout;
     private TaskJournal taskJournal;
+    private Database database;
 
     private TableView<Task> taskTable;
 
-    private ObservableList<Task> taskData = FXCollections.observableArrayList();
+    private ObservableList<Task> taskList;
 
     public Main() {
         taskJournal = TaskJournalController.getInstance();
-        taskData.addAll(taskJournal.getTaskList());
+        database = Database.getInstance();
+        taskList = taskJournal.getTaskList();
     }
 
     @Override
@@ -43,8 +45,11 @@ public class Main extends Application {
         initRootLayout();
         showTaskOverview();
 
+        database.set(Database.DatabaseType.FILE);
+        taskJournal.start();
+
         AlertingSystemController asc = AlertingSystemController.getInstance();
-        asc.setObservableList(getTaskData());
+        asc.setObservableList(taskList);
         asc.showSysTray();
         asc.runAlertingSystem();
     }
@@ -134,8 +139,8 @@ public class Main extends Application {
         return primaryStage;
     }
 
-    public ObservableList<Task> getTaskData(){
-        return taskData;
+    public ObservableList<Task> getTaskList(){
+        return taskList;
     }
 
     public TableView<Task> getTaskTable() {

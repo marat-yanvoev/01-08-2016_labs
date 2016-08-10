@@ -1,13 +1,11 @@
 package sample.Controller;
 
+import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import sample.Controller.Interface.FileDataBase;
+import javafx.scene.control.TableView;
+import sample.Controller.Interface.AlertingSystem;
 import sample.Controller.Interface.TaskJournal;
 import sample.model.Task;
-
-import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * Created by petka on 02.08.2016.
@@ -16,8 +14,12 @@ public class TaskJournalController implements TaskJournal{
 
     private static volatile TaskJournalController instance;
 
-    private List<Task> taskList;
-    private FileDataBase fileDB;
+    private ObservableList<Task> taskList = FXCollections.observableArrayList();
+
+    private Database database;
+    private AlertingSystem alertingSystem;
+
+    private TableView tableView;
 
     public static TaskJournalController getInstance() {
         TaskJournalController localInstance = instance;
@@ -33,77 +35,40 @@ public class TaskJournalController implements TaskJournal{
     }
 
     private TaskJournalController() {
-        taskList = new ArrayList<>();
-        fileDB = FileDataBaseController.getInstance();
+        database = Database.getInstance();
+        alertingSystem = AlertingSystemController.getInstance();
     }
 
     @Override
     public void add(Task task) {
-
+        taskList.add(task);
     }
 
     @Override
     public void delete(Task task) {
-
+        taskList.remove(task);
     }
 
     @Override
     public void put(Task task) {
-
+        taskList.get(taskList.indexOf(task)).setTaskStatus("Put");
+        alertingSystem.editTimerTask(task, AlertingSystemController.TypeEdit.PUT);
     }
 
     @Override
     public void complete(Task task) {
-
+        taskList.get(taskList.indexOf(task)).setTaskStatus("End");
+        alertingSystem.editTimerTask(task, AlertingSystemController.TypeEdit.CANCEL);
     }
 
-    /**
-     * Создает колекцию объектов задач из Колекции строк
-     * полченных из файла.
-     * @return - Колекцию объектов {@link Task}
-     */
     @Override
-    public List<Task> getTaskList() {
-        List<String> lines = fileDB.readFile();
-        for(String line : lines){
-            String[] value = line.split("/");
-
-            taskList.add(new Task(value[0], value[1],
-                    value[2], value[3], toLocalDate(value[4]), value[5], value[6]));
-        }
-
+    public ObservableList<Task> getTaskList() {
         return taskList;
     }
 
-    /**
-     * Преобразует Колекцию объектов в Колекцию строк этих объектов.
-     * toString у Task переопределен.
-     *
-     * @param taskList
-     * @return
-     */
     @Override
-    public List<String> createList(ObservableList<Task> taskList) {
-        List<String> stringList = new ArrayList<>();
-        for (Task task : taskList) {
-            stringList.add(task.toString());
-        }
-
-        return stringList;
-    }
-
-    /**
-     * Преобразует строку со временем в объект LocalDate
-     * @param value
-     * @return
-     */
-    private LocalDate toLocalDate(String value){
-        String[] date = value.split(",");
-        int year = Integer.parseInt(date[2]);
-        int month = Integer.parseInt(date[1]);
-        int day = Integer.parseInt(date[0]);
-
-        return LocalDate.of(year, month, day);
+    public void start() {
+        taskList.addAll(database.load());
     }
 
 }

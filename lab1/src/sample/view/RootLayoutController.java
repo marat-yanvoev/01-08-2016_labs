@@ -6,12 +6,12 @@ import javafx.scene.control.MenuBar;
 import javafx.scene.control.MenuItem;
 import javafx.stage.Stage;
 import sample.Controller.AlertingSystemController;
-import sample.Controller.FileDataBaseController;
+import sample.Controller.Database;
 import sample.Controller.Interface.AlertingSystem;
-import sample.Controller.Interface.FileDataBase;
 import sample.Controller.Interface.TaskJournal;
 import sample.Controller.TaskJournalController;
 import sample.Main;
+import sample.model.OneTimeTask;
 import sample.model.Task;
 
 /**
@@ -30,6 +30,8 @@ public class RootLayoutController {
     @FXML
     private MenuItem menuItemClose;
     @FXML
+    private MenuItem menuItemSave;
+    @FXML
     private MenuItem menuItemAdd;
     @FXML
     private MenuItem menuItemEdit;
@@ -40,45 +42,46 @@ public class RootLayoutController {
 
     private Stage rootStage;
     private Main main;
-    private FileDataBase fileDB;
+    private Database database;
     private TaskJournal taskJournal;
     private AlertingSystem alertingSystem;
 
     public RootLayoutController() {}
 
     public void initialize() {
-        fileDB = FileDataBaseController.getInstance();
+        database = Database.getInstance();
         taskJournal = TaskJournalController.getInstance();
         alertingSystem = AlertingSystemController.getInstance();
     }
 
     @FXML
+    private void handleSave() {
+        database.save(taskJournal.getTaskList());
+    }
+
+    @FXML
     private void handleClose(){
-        rootStage.hide();
-        //AlertingSystemController.getInstance().exitTray();
+        rootStage.close();
+        AlertingSystemController.getInstance().exitTray();
     }
 
     @FXML
     private void handleNew() {
-        Task task = new Task();
+        Task task = new OneTimeTask();
         boolean isClicked = main.showAddTaskDialog(task);
         if(isClicked) {
-            main.getTaskData().add(task);
-            fileDB.writeFile(taskJournal.createList(main.getTaskData()));
-
+            taskJournal.add(task);
         }
     }
 
     @FXML
     private void handleEdit() {
         Task task = main.getTaskTable().getSelectionModel().getSelectedItem();
-
         if(task != null) {
             boolean isClicked = main.showAddTaskDialog(task);
             if(isClicked) {
+                alertingSystem.editTimerTask(task, AlertingSystemController.TypeEdit.EDIT);
                 main.getTaskTable().refresh();
-                fileDB.writeFile(taskJournal.createList(main.getTaskData()));
-                alertingSystem.removeTaskTimer(task);
             }
         }
     }
@@ -87,9 +90,7 @@ public class RootLayoutController {
     private void handleDelete() {
         Task task = main.getTaskTable().getSelectionModel().getSelectedItem();
         if (task != null) {
-            main.getTaskData().remove(task);
-            System.out.println(main.getTaskData().size());
-            fileDB.writeFile(taskJournal.createList(main.getTaskData()));
+            taskJournal.delete(task);
         }
     }
 

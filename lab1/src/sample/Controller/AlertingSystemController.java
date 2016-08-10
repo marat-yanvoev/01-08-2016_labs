@@ -1,11 +1,13 @@
 package sample.Controller;
 
 import javafx.application.Platform;
+import javafx.collections.FXCollections;
 import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
 import javafx.scene.control.*;
 import javafx.scene.control.Menu;
 import javafx.stage.Stage;
+import jdk.nashorn.internal.scripts.JO;
 import sample.Controller.Interface.AlertingSystem;
 import sample.Main;
 import sample.model.Task;
@@ -25,6 +27,12 @@ import java.util.Timer;
  */
 public class AlertingSystemController implements AlertingSystem {
 
+    public static enum TypeEdit {
+        EDIT,
+        PUT,
+        CANCEL
+    }
+
     private static volatile AlertingSystemController instance;
 
     private Timer timer;
@@ -38,6 +46,7 @@ public class AlertingSystemController implements AlertingSystem {
     private Main main;
     private Stage rootStage;
     private ObservableList<Task> observableList;
+    private List<TimerTaskDecorator> timerTaskDecorators;
 
     public static AlertingSystemController getInstance() {
         AlertingSystemController localInstance = instance;
@@ -54,6 +63,7 @@ public class AlertingSystemController implements AlertingSystem {
 
     private AlertingSystemController() {
         this.calendar = Calendar.getInstance();
+        timerTaskDecorators = new ArrayList<>();
 
     }
 
@@ -97,10 +107,31 @@ public class AlertingSystemController implements AlertingSystem {
     }
 
     @Override
-    public void removeTaskTimer(Task task) {
-        System.out.println(task.cancel());
-        System.out.println(timer.purge());
-        timer.schedule(task, setTime(task).getTime());
+    public int showDialog(Task task) {
+        return JOptionPane.showConfirmDialog(null, task.getTaskDescription() +
+                "\n Отложить на 10 секунд?", task.getTaskName(), JOptionPane.YES_NO_OPTION);
+    }
+
+    @Override
+    public void editTimerTask(Task task, TypeEdit typeEdit) {
+        TimerTask timerTask = timerTaskDecorators.get(getOfTask(task));
+        timerTask.cancel();
+        timerTaskDecorators.remove(timerTask);
+        timerTaskDecorators.add(new TimerTaskDecorator(task));
+        switch (typeEdit) {
+            case EDIT:
+                System.out.println("EDIT");
+                timer.schedule(timerTaskDecorators.get(getOfTask(task)), setTime(task).getTime());
+                break;
+            case PUT:
+                System.out.println("PUT");
+                timer.schedule(timerTaskDecorators.get(getOfTask(task)), 10000);
+                break;
+            case CANCEL:
+                System.out.println("CANCEL");
+                break;
+        }
+
     }
 
     private void addListener() {
@@ -113,24 +144,24 @@ public class AlertingSystemController implements AlertingSystem {
                     }
                 } else if (c.wasUpdated()) {
                     System.out.println("Update");
-                    for (int i = c.getFrom(); i < c.getTo(); i++){
-                        Task task = c.getList().get(i);
-                        task.cancel();
-                        timer.schedule(task, setTime(task).getTime());
-                    }
+
                 } else if (c.wasReplaced()) {
 
                 } else {
                     for (Task remitem : c.getRemoved()) {
+                        TimerTask timerTask = timerTaskDecorators.get(getOfTask(remitem));
                         System.out.println(remitem.toString() +
-                                "\n delete" + setTime(remitem).getTime().toString());
-                        remitem.cancel();
+                                "\n delete: " + setTime(remitem).getTime().toString());
+                        timerTask.cancel();
+                        timerTaskDecorators.remove(timerTask);
                     }
                     for (Task additem : c.getAddedSubList()) {
+                        timerTaskDecorators.add(new TimerTaskDecorator(additem));
                         System.out.println(additem.toString() +
-                                "\n added" + setTime(additem).getTime().toString());
-                        timer.schedule(additem, setTime(additem).getTime());
+                                "\n added: " + setTime(additem).getTime().toString());
+                        timer.schedule(timerTaskDecorators.get(getOfTask(additem)), setTime(additem).getTime());
                     }
+                    timer.purge();
                 }
             }
         });
@@ -159,8 +190,10 @@ public class AlertingSystemController implements AlertingSystem {
         }
         timer = new Timer();
         for(Task task : observableList) {
+            timerTaskDecorators.add(new TimerTaskDecorator(task));
+            TimerTask timerTask = timerTaskDecorators.get(getOfTask(task));
             if (task.getTaskStatus().equals(Task.TaskStatus.READY.toString())) {
-                timer.schedule(task, setTime(task).getTime());
+                timer.schedule(timerTask, setTime(task).getTime());
             }
         }
     }
@@ -172,6 +205,7 @@ public class AlertingSystemController implements AlertingSystem {
         }
     }
 
+    @Override
     public void showMessage(String title, String text) {
         trayIcon.displayMessage(title, text, TrayIcon.MessageType.INFO);
     }
@@ -195,6 +229,16 @@ public class AlertingSystemController implements AlertingSystem {
 
     public void setRootStage(Stage rootStage) {
         this.rootStage = rootStage;
+    }
+
+    private int getOfTask(Task task) {
+        for (TimerTaskDecorator timerTask : timerTaskDecorators) {
+            if (timerTask.getTask().equals(task)) {
+                return timerTaskDecorators.indexOf(timerTask);
+            }
+        }
+
+        return 0;
     }
 
 //    public void setTimerTask(TimerTask timerTask) {
