@@ -122,37 +122,40 @@ public class AlertingSystemController implements AlertingSystem {
 
     }
 
+    /*
+     * Refractoring
+     */
     private void addListener() {
         this.observableList.addListener((ListChangeListener<Task>) c -> {
             while (c.next()) {
                 if (c.wasPermutated()) {
                     System.out.println("Permuted");
-                    for (int i = c.getFrom(); i < c.getTo(); i++){
-
-                    }
+                    for (int i = c.getFrom(); i < c.getTo(); i++){}
                 } else if (c.wasUpdated()) {
                     System.out.println("Update");
-
                 } else if (c.wasReplaced()) {
-
                 } else {
-                    for (Task remitem : c.getRemoved()) {
-                        TimerTask timerTask = timerTaskDecorators.get(getOfTask(remitem));
-                        System.out.println(remitem.toString() +
-                                "\n delete: " + setTime(remitem).getTime().toString());
-                        timerTask.cancel();
-                        timerTaskDecorators.remove(timerTask);
-                    }
-                    for (Task additem : c.getAddedSubList()) {
-                        timerTaskDecorators.add(new TimerTaskDecorator(additem));
-                        System.out.println(additem.toString() +
-                                "\n added: " + setTime(additem).getTime().toString());
-                        timer.schedule(timerTaskDecorators.get(getOfTask(additem)), setTime(additem).getTime());
-                    }
+                    c.getRemoved().forEach(this::removedItem);
+                    c.getAddedSubList().forEach(this::addedSubList);
                     timer.purge();
                 }
             }
         });
+    }
+
+    private void removedItem(Task remitem) {
+        TimerTask timerTask = timerTaskDecorators.get(getOfTask(remitem));
+        System.out.println(remitem.toString() +
+                "\n delete: " + setTime(remitem).getTime().toString());
+        timerTask.cancel();
+        timerTaskDecorators.remove(timerTask);
+    }
+
+    private void addedSubList(Task additem) {
+        timerTaskDecorators.add(new TimerTaskDecorator(additem));
+        System.out.println(additem.toString() +
+                "\n added: " + setTime(additem).getTime().toString());
+        timer.schedule(timerTaskDecorators.get(getOfTask(additem)), setTime(additem).getTime());
     }
 
     private Image createImage(String path, String description) {

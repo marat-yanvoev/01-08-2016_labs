@@ -1,10 +1,10 @@
-package sample.Controller;
+package sample.controller;
 
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.scene.control.TableView;
-import sample.Controller.Interface.AlertingSystem;
-import sample.Controller.Interface.TaskJournal;
+import sample.controller.Interface.AlertingSystem;
+import sample.controller.Interface.TaskJournal;
 import sample.model.Task;
 
 /**
@@ -21,17 +21,11 @@ public class TaskJournalController implements TaskJournal{
 
     private TableView tableView;
 
-    public static TaskJournalController getInstance() {
-        TaskJournalController localInstance = instance;
-        if (localInstance == null) {
-            synchronized (TaskJournalController.class) {
-                localInstance = instance;
-                if (localInstance == null) {
-                    instance = localInstance = new TaskJournalController();
-                }
-            }
+    public static synchronized TaskJournalController getInstance() {
+        if (instance == null) {
+            instance = new TaskJournalController();
         }
-        return localInstance;
+        return instance;
     }
 
     private TaskJournalController() {
