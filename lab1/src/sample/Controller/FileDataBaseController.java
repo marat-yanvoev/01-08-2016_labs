@@ -1,7 +1,7 @@
-package sample.Controller;
+package sample.controller;
 
 import javafx.collections.ObservableList;
-import sample.Controller.Interface.DatabaseBehavior;
+import sample.controller.Interface.DatabaseBehavior;
 import sample.model.OneTimeTask;
 import sample.model.Task;
 
@@ -11,7 +11,6 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.*;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.StringTokenizer;
 
 /**
  * Контроллер работы с текстовыми файлами
@@ -19,23 +18,17 @@ import java.util.StringTokenizer;
 public class FileDatabaseController implements DatabaseBehavior {
 
 
-    private static volatile FileDatabaseController instance;
+    private static FileDatabaseController instance;
 
     private final String fileName;
 
     private File f;
 
-    public static FileDatabaseController getInstance() {
-        FileDatabaseController localInstance = instance;
-        if (localInstance == null) {
-            synchronized (FileDatabaseController.class){
-                localInstance = instance;
-                if (localInstance == null) {
-                    instance = localInstance = new FileDatabaseController();
-                }
-            }
+    public static synchronized FileDatabaseController getInstance() {
+        if (instance == null) {
+            instance = new FileDatabaseController();
         }
-        return localInstance;
+        return instance;
     }
 
     /**

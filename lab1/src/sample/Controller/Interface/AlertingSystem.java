@@ -1,10 +1,7 @@
-package sample.Controller.Interface;
+package sample.controller.Interface;
 
-import javafx.collections.ObservableList;
-import sample.Controller.AlertingSystemController;
+import sample.controller.AlertingSystemController;
 import sample.model.Task;
-
-import java.util.List;
 
 /**
  * Created by petka on 08.08.2016.

@@ -1,10 +1,5 @@
 package sample.model;
 
-import sample.Controller.AlertingSystemController;
-
-import java.time.LocalDate;
-import java.util.TimerTask;
-
 /**
  * Created by petka on 09.08.2016.
  */

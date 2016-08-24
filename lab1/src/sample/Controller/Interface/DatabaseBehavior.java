@@ -1,4 +1,4 @@
-package sample.Controller.Interface;
+package sample.controller.Interface;
 
 import javafx.collections.ObservableList;
 import sample.model.Task;

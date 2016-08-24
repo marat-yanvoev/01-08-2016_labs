@@ -5,8 +5,8 @@ import javafx.scene.control.Label;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextArea;
-import sample.Controller.Interface.TaskJournal;
-import sample.Controller.TaskJournalController;
+import sample.controller.Interface.TaskJournal;
+import sample.controller.TaskJournalController;
 import sample.Main;
 import sample.model.Task;
 

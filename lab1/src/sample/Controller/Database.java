@@ -1,7 +1,7 @@
-package sample.Controller;
+package sample.controller;
 
 import javafx.collections.ObservableList;
-import sample.Controller.Interface.DatabaseBehavior;
+import sample.controller.Interface.DatabaseBehavior;
 import sample.model.Task;
 
 import java.util.List;
@@ -11,19 +11,13 @@ import java.util.List;
  */
 public class Database {
 
-    private static volatile Database instance;
+    private static Database instance;
 
-    public static Database getInstance() {
-        Database localInstance = instance;
-        if (localInstance == null){
-            synchronized (Database.class) {
-                localInstance = instance;
-                if (localInstance == null) {
-                    instance = localInstance = new Database();
-                }
-            }
+    public static synchronized Database getInstance() {
+        if (instance == null) {
+            instance = new Database();
         }
-        return localInstance;
+        return instance;
     }
 
     public static enum DatabaseType {

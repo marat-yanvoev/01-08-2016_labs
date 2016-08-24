@@ -1,10 +1,7 @@
-package sample.Controller.Interface;
+package sample.controller.Interface;
 
 import javafx.collections.ObservableList;
-import javafx.scene.control.TableView;
 import sample.model.Task;
-
-import java.util.List;
 
 /**
  * Created by petka on 02.08.2016.

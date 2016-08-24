@@ -1,7 +1,7 @@
-package sample.Controller;
+package sample.controller;
 
-import sample.Controller.Interface.AlertingSystem;
-import sample.Controller.Interface.TaskJournal;
+import sample.controller.Interface.AlertingSystem;
+import sample.controller.Interface.TaskJournal;
 import sample.model.Task;
 
 import javax.swing.*;

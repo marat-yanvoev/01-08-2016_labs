@@ -1,13 +1,10 @@
 package sample.model;
 
 import javafx.beans.property.*;
-import sample.Controller.AlertingSystemController;
-import sample.Controller.Interface.AlertingSystem;
+import sample.controller.AlertingSystemController;
+import sample.controller.Interface.AlertingSystem;
 
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.time.LocalDate;
-import java.util.TimerTask;
 
 /**
  * Created by petka on 01.08.2016.
