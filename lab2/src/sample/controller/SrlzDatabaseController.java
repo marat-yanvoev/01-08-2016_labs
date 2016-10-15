@@ -3,6 +3,7 @@ package sample.controller;
 import javafx.collections.ObservableList;
 import sample.controller.Interface.DatabaseBehavior;
 import sample.model.OneTimeTask;
+import sample.model.SimpleTask;
 import sample.model.Task;
 
 import java.io.*;
@@ -35,9 +36,10 @@ public class SrlzDatabaseController implements DatabaseBehavior {
     @Override
     public List<Task> load() {
         List<Task> list = new ArrayList<>();
+        List<SimpleTask> simpleTaskList = new ArrayList<>();
         try {
             in = new ObjectInputStream(new FileInputStream(fileName));
-            while (list.add((OneTimeTask)in.readObject())) {}
+            simpleTaskList = (ArrayList)in.readObject();
             in.close();
             in = null;
         } catch (IOException e) {
@@ -45,20 +47,37 @@ public class SrlzDatabaseController implements DatabaseBehavior {
         } catch (ClassNotFoundException e) {
             e.printStackTrace();
         }
-        return list;
+        return creatTaskList(simpleTaskList);
     }
 
     @Override
     public void save(ObservableList<Task> lines) {
+        List<SimpleTask> simpleTaskList = new ArrayList<>();
         try {
             out = new ObjectOutputStream(new FileOutputStream(fileName));
             for (Task task : lines) {
-                out.writeObject(task);
+                SimpleTask simpleTask = new SimpleTask(task.getTaskName(), task.getTaskStatus(), task.getTaskDescription(),
+                                        task.getTaskContacts(), task.getTaskDateString(),
+                                        Integer.toString(task.getTaskHour()), Integer.toString(task.getTaskMin()));
+                simpleTaskList.add(simpleTask);
             }
+            out.writeObject(simpleTaskList);
             out.close();
             out = null;
         } catch (IOException e) {
             e.printStackTrace();
         }
     }
+
+    private List<Task> creatTaskList(List<SimpleTask> simpleTaskList) {
+        List<Task> taskList = new ArrayList<>();
+        for (SimpleTask task : simpleTaskList) {
+            OneTimeTask oneTimeTask = new OneTimeTask(task.getTaskName(), task.getTaskStatus(), task.getTaskDescription(),
+                    task.getTaskContacts(), task.getTaskDate(),
+                    task.getTaskHour(), task.getTaskMin());
+            taskList.add(oneTimeTask);
+        }
+        return taskList;
+    }
+
 }

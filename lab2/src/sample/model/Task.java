@@ -108,6 +108,10 @@ public abstract class Task implements Serializable {
         return taskDate.get();
     }
 
+    public String getTaskDateString() {
+        return dateToString(taskDate.get());
+    }
+
     public ObjectProperty<LocalDate> taskDateProperty() {
         return taskDate;
     }

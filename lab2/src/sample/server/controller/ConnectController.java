@@ -3,6 +3,10 @@ package sample.server.controller;
 import org.omg.CORBA.Object;
 import sample.server.controller.interfaces.ClientConnection;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.net.Socket;
 
 /**
@@ -13,14 +17,18 @@ import java.net.Socket;
 public class ConnectController extends Thread implements ClientConnection {
 
     private Socket clientSocket;
+    private ObjectInputStream objectInputStream;
+    private ObjectOutputStream objectOutputStream;
 
-    public ConnectController(Socket socket) {
+    public ConnectController(Socket socket) throws IOException {
         clientSocket = socket;
+        objectInputStream = new ObjectInputStream(socket.getInputStream());
+        objectOutputStream = new ObjectOutputStream(socket.getOutputStream());
         start();
     }
 
     public void run() {
-
+        
     }
 
     @Override
