@@ -14,6 +14,8 @@ import sample.controller.Database;
 import sample.controller.Interface.TaskJournal;
 import sample.controller.TaskJournalController;
 import sample.model.Task;
+import sample.server.controller.ServerController;
+import sample.server.controller.interfaces.TMServer;
 import sample.view.server.AddAndEditTaskDialogController;
 import sample.view.server.RootLayoutController;
 import sample.view.server.TaskOverviewController;
@@ -32,6 +34,7 @@ public class Main extends Application{
     private BorderPane rootLayout;
     private TaskJournal taskJournal;
     private Database database;
+    private TMServer server;
 
     private TableView<Task> taskTable;
 
@@ -41,6 +44,7 @@ public class Main extends Application{
         taskJournal = TaskJournalController.getInstance();
         database = Database.getInstance();
         taskList = taskJournal.getTaskList();
+        server = new ServerController().getInstance();
     }
 
     @Override
@@ -54,10 +58,12 @@ public class Main extends Application{
         database.set(Database.DatabaseType.SERIALIZE);
         taskJournal.start();
 
+
         AlertingSystemController asc = AlertingSystemController.getInstance();
         asc.setObservableList(taskList);
         asc.showSysTray();
         asc.runAlertingSystem();
+        server.start();
     }
 
     /**

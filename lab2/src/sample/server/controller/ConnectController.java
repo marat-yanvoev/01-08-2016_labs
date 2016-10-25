@@ -19,6 +19,7 @@ public class ConnectController extends Thread implements ClientConnection {
     private Socket clientSocket;
     private ObjectInputStream objectInputStream;
     private ObjectOutputStream objectOutputStream;
+    private String clientMessage;
 
     public ConnectController(Socket socket) throws IOException {
         clientSocket = socket;
@@ -28,7 +29,14 @@ public class ConnectController extends Thread implements ClientConnection {
     }
 
     public void run() {
-        
+        try {
+            clientMessage = (String)objectInputStream.readObject();
+            System.out.println(clientMessage);
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     @Override

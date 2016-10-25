@@ -14,10 +14,17 @@ public class ServerController implements TMServer {
 
     private static ServerController instance;
 
-    private final int port = 4444;
+    private final int port = 5454;
     private static ServerSocket serverSocket;
 
-    private ServerController() {}
+    public ServerController() {
+        try {
+            System.out.println("run server. Port = " + port);
+            serverSocket = new ServerSocket(port);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
 
     public ServerController getInstance() {
         if(instance == null) {
@@ -29,7 +36,7 @@ public class ServerController implements TMServer {
     @Override
     public void start(){
         try {
-            ConnectController cc = new ConnectController(serverSocket.accept());
+            new ConnectController(serverSocket.accept());
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -37,6 +44,10 @@ public class ServerController implements TMServer {
 
     @Override
     public void stop() {
-
+        try {
+            serverSocket.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 }
