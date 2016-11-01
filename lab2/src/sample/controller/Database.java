@@ -23,6 +23,7 @@ public class Database {
     public static enum DatabaseType {
         FILE,
         //XML,
+        TCP,
         SERIALIZE
     }
 
@@ -57,6 +58,9 @@ public class Database {
             /*case XML:
 
                 break;*/
+            case TCP:
+                databaseBehavior = TCPDatabaseController.getInstance();
+                break;
             case SERIALIZE:
                 databaseBehavior = SrlzDatabaseController.getInstance();
                 break;

@@ -6,6 +6,6 @@ package sample.server.controller.interfaces;
  * @author Evgeniy Tupikov
  */
 public interface TMServer {
-    public void start();
-    public void stop();
+    public void startServer();
+    public void stopServer();
 }

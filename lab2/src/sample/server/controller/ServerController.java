@@ -10,14 +10,14 @@ import java.net.ServerSocket;
  *
  * @author Evgeniy Tupikov
  */
-public class ServerController implements TMServer {
+public class ServerController extends Thread implements TMServer {
 
     private static ServerController instance;
 
-    private final int port = 5454;
+    private final int port = 4444;
     private static ServerSocket serverSocket;
 
-    public ServerController() {
+    private ServerController() {
         try {
             System.out.println("run server. Port = " + port);
             serverSocket = new ServerSocket(port);
@@ -26,24 +26,31 @@ public class ServerController implements TMServer {
         }
     }
 
-    public ServerController getInstance() {
+    public static ServerController getInstance() {
         if(instance == null) {
             instance = new ServerController();
         }
         return instance;
     }
 
-    @Override
-    public void start(){
+    public void run() {
         try {
-            new ConnectController(serverSocket.accept());
+            while (true) {
+                new ConnectController(serverSocket.accept());
+            }
+
         } catch (IOException e) {
             e.printStackTrace();
         }
     }
 
     @Override
-    public void stop() {
+    public void startServer(){
+        start();
+    }
+
+    @Override
+    public void stopServer() {
         try {
             serverSocket.close();
         } catch (IOException e) {

@@ -44,13 +44,13 @@ public class Main extends Application{
         taskJournal = TaskJournalController.getInstance();
         database = Database.getInstance();
         taskList = taskJournal.getTaskList();
-        server = new ServerController().getInstance();
+        server = ServerController.getInstance();
     }
 
     @Override
     public void start(Stage primaryStage) throws Exception{
         this.primaryStage = primaryStage;
-        this.primaryStage.setTitle("Task manager");
+        this.primaryStage.setTitle("Task manager Server");
 
         initRootLayout();
         showTaskOverview();
@@ -59,11 +59,11 @@ public class Main extends Application{
         taskJournal.start();
 
 
-        AlertingSystemController asc = AlertingSystemController.getInstance();
-        asc.setObservableList(taskList);
-        asc.showSysTray();
-        asc.runAlertingSystem();
-        server.start();
+//        AlertingSystemController asc = AlertingSystemController.getInstance();
+//        asc.setObservableList(taskList);
+//        asc.showSysTray();
+//        asc.runAlertingSystem();
+        server.startServer();
     }
 
     /**
@@ -83,7 +83,7 @@ public class Main extends Application{
             controller.setRootStage(primaryStage);
             controller.setMain(this);
 
-            AlertingSystemController.getInstance().setRootStage(primaryStage);
+            //AlertingSystemController.getInstance().setRootStage(primaryStage);
 
         } catch (IOException e) {
             e.printStackTrace();

@@ -21,6 +21,7 @@ public class SrlzDatabaseController implements DatabaseBehavior {
 
     private ObjectOutputStream out;
     private ObjectInputStream in;
+    private List<SimpleTask> simpleTaskList;
 
     private final String fileName = "data.srlz.txt";
 
@@ -35,7 +36,6 @@ public class SrlzDatabaseController implements DatabaseBehavior {
 
     @Override
     public List<Task> load() {
-        List<Task> list = new ArrayList<>();
         List<SimpleTask> simpleTaskList = new ArrayList<>();
         try {
             in = new ObjectInputStream(new FileInputStream(fileName));
@@ -47,6 +47,7 @@ public class SrlzDatabaseController implements DatabaseBehavior {
         } catch (ClassNotFoundException e) {
             e.printStackTrace();
         }
+        this.simpleTaskList = simpleTaskList;
         return creatTaskList(simpleTaskList);
     }
 
@@ -78,6 +79,10 @@ public class SrlzDatabaseController implements DatabaseBehavior {
             taskList.add(oneTimeTask);
         }
         return taskList;
+    }
+
+    public synchronized List<SimpleTask> getSimpleTaskList() {
+        return simpleTaskList;
     }
 
 }
