@@ -10,13 +10,12 @@ import sample.model.Task;
 
 import java.util.ArrayList;
 import java.util.List;
-
 /**
  * Created by petka on 01.11.2016.
  *
  * @author Evgeniy Tupikov
  */
-public class TCPDatabaseController implements DatabaseBehavior {
+class TCPDatabaseController implements DatabaseBehavior {
 
     private static TCPDatabaseController instance;
 
@@ -50,7 +49,6 @@ public class TCPDatabaseController implements DatabaseBehavior {
             e.printStackTrace();
         }
         simpleTaskList = (ArrayList)clientBehavior.getResponse();
-        System.out.println(simpleTaskList.get(0).toString());
         clientBehavior.disconnect();
         return createTaskList(simpleTaskList);
     }

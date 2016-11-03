@@ -17,7 +17,7 @@ import java.util.List;
  *
  * @author Evgeniy Tupikov
  */
-public class ClientController extends Thread implements ClientBehavior{
+public class ClientController extends Thread implements ClientBehavior {
 
     private static ClientController instance;
 
@@ -35,7 +35,7 @@ public class ClientController extends Thread implements ClientBehavior{
     private int port;
     private String clientMessage;
     private List<SimpleTask> simpleTaskList = new ArrayList<>();
-    private Object objectResponse;
+    private volatile Object objectResponse;
 
     private ClientController() {
         try {
@@ -64,7 +64,7 @@ public class ClientController extends Thread implements ClientBehavior{
     }
 
     @Override
-    public Object getResponse() {
+    public synchronized Object getResponse() {
         System.out.println("Get Response");
         return objectResponse;
     }
@@ -96,9 +96,7 @@ public class ClientController extends Thread implements ClientBehavior{
                 objectOutputStream.writeObject(clientMessage);
                 System.out.println("Response...");
                 objectResponse = objectInputStream.readObject();
-            } catch (IOException e) {
-                e.printStackTrace();
-            } catch (ClassNotFoundException e) {
+            } catch (IOException | ClassNotFoundException e) {
                 e.printStackTrace();
             }
         }
