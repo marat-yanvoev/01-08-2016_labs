@@ -1,10 +1,8 @@
 package sample.view.client;
 
 import javafx.fxml.FXML;
-import javafx.scene.control.Label;
-import javafx.scene.control.TableColumn;
-import javafx.scene.control.TableView;
-import javafx.scene.control.TextArea;
+import javafx.scene.control.*;
+import sample.client.controller.TCPTask;
 import sample.controller.Interface.TaskJournal;
 import sample.controller.TaskJournalController;
 import sample.model.Task;
@@ -41,7 +39,8 @@ public class TaskOverviewController {
     @FXML
     private void initialize(){
         taskJournal = TaskJournalController.getInstance();
-        taskTable.setItems(taskJournal.getTaskList());
+        taskTable.itemsProperty().bind(TCPTask.getInstance().valueProperty());
+        //taskTable.setItems(taskJournal.getTaskList());
         taskName.setCellValueFactory(cellData -> cellData.getValue().taskNameProperty());
         taskDate.setCellValueFactory(cellData -> cellData.getValue().taskDateProperty());
 

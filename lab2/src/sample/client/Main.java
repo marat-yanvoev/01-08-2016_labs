@@ -9,6 +9,7 @@ import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.BorderPane;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
+import sample.client.controller.ClientController;
 import sample.controller.AlertingSystemController;
 import sample.controller.Database;
 import sample.controller.Interface.TaskJournal;
@@ -53,6 +54,8 @@ public class Main extends Application {
 
         initRootLayout();
         showTaskOverview();
+
+        ClientController.getInstance().connect();
 
         database.set(Database.DatabaseType.TCP);
         taskJournal.start();

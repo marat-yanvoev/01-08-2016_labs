@@ -11,7 +11,8 @@ import java.util.List;
  * @author Evgeniy Tupikov
  */
 public interface ClientBehavior {
-    void connect(String clientMessage);
+    void connect();
     Object getResponse();
+    void sendQuery(String clientMessage);
     void disconnect();
 }

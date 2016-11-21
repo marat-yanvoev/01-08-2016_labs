@@ -17,7 +17,7 @@ import java.util.List;
  *
  * @author Evgeniy Tupikov
  */
-public class ClientController extends Thread implements ClientBehavior {
+public class ClientController implements ClientBehavior {
 
     private static ClientController instance;
 
@@ -34,7 +34,7 @@ public class ClientController extends Thread implements ClientBehavior {
     private InetAddress addr;
     private int port;
     private String clientMessage;
-    private List<SimpleTask> simpleTaskList = new ArrayList<>();
+    //private List<SimpleTask> simpleTaskList = new ArrayList<>();
     private volatile Object objectResponse;
 
     private ClientController() {
@@ -47,7 +47,7 @@ public class ClientController extends Thread implements ClientBehavior {
     }
 
     @Override
-    public void connect(String clientMessage) {
+    public void connect() {
         try {
             System.out.println("Connect to " + addr.toString() + ":" + port);
             clientSocket = new Socket(addr, port);
@@ -55,9 +55,14 @@ public class ClientController extends Thread implements ClientBehavior {
             //порядок важен
             objectOutputStream = new ObjectOutputStream(clientSocket.getOutputStream());
             objectInputStream = new ObjectInputStream(clientSocket.getInputStream());
-            this.clientMessage = clientMessage;
-            System.out.println("Start thread");
-            start();
+            System.out.println("Start thread and authorization...");
+            objectOutputStream.writeObject("admin/qwerty");
+            try {
+                objectResponse = objectInputStream.readObject();
+                System.out.println((String)objectResponse);
+            } catch (ClassNotFoundException e) {
+                e.printStackTrace();
+            }
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -70,23 +75,7 @@ public class ClientController extends Thread implements ClientBehavior {
     }
 
     @Override
-    public void disconnect() {
-        try {
-            objectInputStream.close();
-            objectOutputStream.flush();
-            objectOutputStream.close();
-            clientSocket.close();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
-
-    @Override
-    public void run() {
-        processingSteps(clientMessage);
-    }
-
-    private void processingSteps(String clientMessage) {
+    public void sendQuery(String clientMessage) {
         if (clientMessage == null) {
             //Исключение
             throw new UnsupportedOperationException();
@@ -99,6 +88,19 @@ public class ClientController extends Thread implements ClientBehavior {
             } catch (IOException | ClassNotFoundException e) {
                 e.printStackTrace();
             }
+        }
+    }
+
+    @Override
+    public void disconnect() {
+        try {
+            objectOutputStream.writeObject("0");
+            objectInputStream.close();
+            objectOutputStream.flush();
+            objectOutputStream.close();
+            clientSocket.close();
+        } catch (IOException e) {
+            e.printStackTrace();
         }
     }
 

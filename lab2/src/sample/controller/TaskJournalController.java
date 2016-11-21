@@ -7,6 +7,8 @@ import sample.controller.Interface.AlertingSystem;
 import sample.controller.Interface.TaskJournal;
 import sample.model.Task;
 
+import java.util.List;
+
 /**
  * Created by petka on 02.08.2016.
  */
@@ -31,6 +33,7 @@ public class TaskJournalController implements TaskJournal{
     private TaskJournalController() {
         database = Database.getInstance();
         alertingSystem = AlertingSystemController.getInstance();
+
     }
 
     @Override
@@ -62,7 +65,13 @@ public class TaskJournalController implements TaskJournal{
 
     @Override
     public void start() {
-        taskList.addAll(database.load());
+        List<Task> tempTaskList = database.load();
+        if (tempTaskList != null) {
+            System.out.println("load main thread...");
+            taskList.addAll(tempTaskList);
+        } else {
+            System.out.println("Background thread");
+        }
     }
 
 }

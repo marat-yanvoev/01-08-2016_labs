@@ -2,6 +2,7 @@ package sample.controller;
 
 import javafx.collections.ObservableList;
 import sample.client.controller.ClientController;
+import sample.client.controller.TCPTask;
 import sample.client.controller.interfaces.ClientBehavior;
 import sample.controller.Interface.DatabaseBehavior;
 import sample.model.OneTimeTask;
@@ -28,6 +29,7 @@ class TCPDatabaseController implements DatabaseBehavior {
 
     private ClientBehavior clientBehavior;
     private List<SimpleTask> simpleTaskList;
+    private TCPTask tcpTask;
 
     public void setObjectResponse(Object objectResponse) {
         this.objectResponse = objectResponse;
@@ -38,35 +40,19 @@ class TCPDatabaseController implements DatabaseBehavior {
     private TCPDatabaseController() {
         clientBehavior = ClientController.getInstance();
         simpleTaskList = new ArrayList<>();
+        tcpTask = TCPTask.getInstance();
     }
 
     @Override
     public List<Task> load() {
-        clientBehavior.connect("1");
-        try {
-            ClientController.getInstance().join();
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
-        simpleTaskList = (ArrayList)clientBehavior.getResponse();
-        clientBehavior.disconnect();
-        return createTaskList(simpleTaskList);
+        tcpTask.setQuery("1");
+        new Thread(tcpTask).start();
+        return null;
     }
 
     @Override
     public void save(ObservableList<Task> lines) {
 
-    }
-
-    private List<Task> createTaskList(List<SimpleTask> simpleTaskList) {
-        List<Task> taskList = new ArrayList<>();
-        for (SimpleTask task : simpleTaskList) {
-            OneTimeTask oneTimeTask = new OneTimeTask(task.getTaskName(), task.getTaskStatus(), task.getTaskDescription(),
-                    task.getTaskContacts(), task.getTaskDate(),
-                    task.getTaskHour(), task.getTaskMin());
-            taskList.add(oneTimeTask);
-        }
-        return taskList;
     }
 
     public List<SimpleTask> getSimpleTaskList() {

@@ -66,6 +66,7 @@ public abstract class Task implements Serializable {
 
     public void setTaskName(String taskName) {
         this.taskName.set(taskName);
+        //simpleTask.setName(taskName);
     }
 
     public String getTaskStatus() {

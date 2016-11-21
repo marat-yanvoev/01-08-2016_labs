@@ -29,6 +29,7 @@ public class ConnectController extends Thread implements ClientConnection {
     private ObjectOutputStream objectOutputStream;
     private String clientMessage;
     private SrlzDatabaseController serializeDB;
+    private boolean authorization = false;
 
     public ConnectController(Socket socket) throws IOException {
         clientSocket = socket;
@@ -41,12 +42,26 @@ public class ConnectController extends Thread implements ClientConnection {
 
     public void run() {
         try {
-            clientMessage = (String)objectInputStream.readObject();
-            System.out.println(clientMessage);
-            processingSteps(clientMessage);
-        } catch (ClassNotFoundException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
+            while (authorization != true) {
+                clientMessage = (String) objectInputStream.readObject();
+                System.out.println(clientMessage);
+                String[] userDate = clientMessage.split("/");
+                System.out.println("verification... \n" +
+                        "id: " + userDate[0] +
+                        "\npass: " + userDate[1]);
+                authorization = AuthController.getInstance().verification(userDate[0], userDate[1]);
+                if (authorization == false) {
+                    objectOutputStream.writeObject(AuthController.getInstance().getVerificMessage() +
+                    "Please, try again...");
+                }
+                objectOutputStream.writeObject(AuthController.getInstance().getVerificMessage());
+            }
+            while (authorization == true) {
+                clientMessage = (String) objectInputStream.readObject();
+                System.out.println(clientMessage);
+                processingSteps(clientMessage);
+            }
+        } catch (ClassNotFoundException | IOException e) {
             e.printStackTrace();
         }
     }
