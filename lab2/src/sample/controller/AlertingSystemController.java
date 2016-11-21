@@ -3,6 +3,7 @@ package sample.controller;
 import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
 import javafx.stage.Stage;
+import sample.client.controller.TCPTask;
 import sample.controller.Interface.AlertingSystem;
 import sample.server.Main;
 import sample.model.Task;
@@ -41,6 +42,7 @@ public class AlertingSystemController implements AlertingSystem {
     private Stage rootStage;
     private ObservableList<Task> observableList;
     private List<TimerTaskDecorator> timerTaskDecorators;
+    private TCPTask tcpTask;
 
     public static synchronized AlertingSystemController getInstance() {
         if (instance == null) {
@@ -57,7 +59,7 @@ public class AlertingSystemController implements AlertingSystem {
 
     @Override
     public void runAlertingSystem() {
-
+        tcpTask = TCPTask.getInstance();
         runTimer();
         addListener();
     }
@@ -149,6 +151,7 @@ public class AlertingSystemController implements AlertingSystem {
                 "\n delete: " + setTime(remitem).getTime().toString());
         timerTask.cancel();
         timerTaskDecorators.remove(timerTask);
+        queryToServer("del/" + remitem.getTaskName());
     }
 
     private void addedSubList(Task additem) {
@@ -156,6 +159,7 @@ public class AlertingSystemController implements AlertingSystem {
         System.out.println(additem.toString() +
                 "\n added: " + setTime(additem).getTime().toString());
         timer.schedule(timerTaskDecorators.get(getOfTask(additem)), setTime(additem).getTime());
+        queryToServer(additem.toString());
     }
 
     private Image createImage(String path, String description) {
@@ -230,6 +234,17 @@ public class AlertingSystemController implements AlertingSystem {
         }
 
         return 0;
+    }
+
+    private void queryToServer(String query) {
+        System.out.println(query);
+        TCPTask.setNull();
+        tcpTask = TCPTask.getInstance();
+        tcpTask.setQuery(query);
+        System.out.println(tcpTask.isCancelled());
+        Thread th = new Thread(tcpTask);
+        th.setDaemon(true);
+        th.start();
     }
 
 //    public void setTimerTask(TimerTask timerTask) {

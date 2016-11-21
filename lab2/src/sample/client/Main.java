@@ -10,9 +10,12 @@ import javafx.scene.layout.BorderPane;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import sample.client.controller.ClientController;
+import sample.client.controller.ReloadTaskController;
+import sample.client.controller.TCPTask;
 import sample.controller.AlertingSystemController;
 import sample.controller.Database;
 import sample.controller.Interface.TaskJournal;
+import sample.controller.TCPDatabaseController;
 import sample.controller.TaskJournalController;
 import sample.model.SimpleTask;
 import sample.model.Task;
@@ -43,8 +46,8 @@ public class Main extends Application {
 
     public Main() {
         taskJournal = TaskJournalController.getInstance();
+        TCPDatabaseController.getInstance().setMain(this);
         database = Database.getInstance();
-        taskList = taskJournal.getTaskList();
     }
 
     @Override
@@ -59,12 +62,8 @@ public class Main extends Application {
 
         database.set(Database.DatabaseType.TCP);
         taskJournal.start();
-
-
-        AlertingSystemController asc = AlertingSystemController.getInstance();
-        asc.setObservableList(taskList);
-        asc.showSysTray();
-        asc.runAlertingSystem();
+        ReloadTaskController reloadTaskController = new ReloadTaskController(this);
+        //reloadTaskController.start();
     }
 
     /**
@@ -148,6 +147,14 @@ public class Main extends Application {
         }
     }
 
+    public void startAlertingSystem() {
+        System.out.println("start alerting...");
+        AlertingSystemController asc = AlertingSystemController.getInstance();
+        asc.setObservableList(taskList);
+        asc.showSysTray();
+        asc.runAlertingSystem();
+    }
+
     public Stage getPrimaryStage() {
         return primaryStage;
     }
@@ -164,4 +171,7 @@ public class Main extends Application {
         launch(args);
     }
 
+    public void setTaskList(ObservableList<Task> taskList) {
+        this.taskList = taskList;
+    }
 }

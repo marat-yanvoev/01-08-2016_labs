@@ -27,6 +27,10 @@ public class TCPTask extends Task<ObservableList<sample.model.Task>> {
         return instance;
     }
 
+    public static void setNull() {
+        instance = null;
+    }
+
     public void setQuery(String query) {
         this.query = query;
     }
@@ -40,6 +44,7 @@ public class TCPTask extends Task<ObservableList<sample.model.Task>> {
 
     @Override
     protected ObservableList<sample.model.Task> call() throws Exception {
+        System.out.println("loading Task list...");
         updateMessage("loading Task list...");
         ObservableList<sample.model.Task> taskObservableList = FXCollections.observableArrayList();
         client.sendQuery(query);

@@ -1,8 +1,12 @@
 package sample.server.controller;
 
 import org.omg.CORBA.Object;
+import sample.controller.Database;
+import sample.controller.Interface.TaskJournal;
 import sample.controller.SrlzDatabaseController;
 import sample.controller.TaskJournalController;
+import sample.model.OneTimeTask;
+import sample.model.Task;
 import sample.server.controller.interfaces.ClientConnection;
 
 import java.io.BufferedReader;
@@ -30,6 +34,11 @@ public class ConnectController extends Thread implements ClientConnection {
     private String clientMessage;
     private SrlzDatabaseController serializeDB;
     private boolean authorization = false;
+    private String taskName;
+    private TaskJournal taskJournal;
+    private Database database;
+    private String[] tempMess;
+    private String tempTaskString;
 
     public ConnectController(Socket socket) throws IOException {
         clientSocket = socket;
@@ -37,6 +46,7 @@ public class ConnectController extends Thread implements ClientConnection {
         objectOutputStream = new ObjectOutputStream(socket.getOutputStream());
         System.out.println(clientSocket.toString());
         serializeDB = SrlzDatabaseController.getInstance();
+        taskJournal = TaskJournalController.getInstance();
         start();
     }
 
@@ -53,12 +63,27 @@ public class ConnectController extends Thread implements ClientConnection {
                 if (authorization == false) {
                     objectOutputStream.writeObject(AuthController.getInstance().getVerificMessage() +
                     "Please, try again...");
+                } else {
+                    objectOutputStream.writeObject(AuthController.getInstance().getVerificMessage());
+                    break;
                 }
-                objectOutputStream.writeObject(AuthController.getInstance().getVerificMessage());
             }
             while (authorization == true) {
+                System.out.println("wait message from client...");
                 clientMessage = (String) objectInputStream.readObject();
                 System.out.println(clientMessage);
+
+
+                tempMess = clientMessage.split("/");
+                if (tempMess.length == 2) {
+                    taskName = tempMess[1];
+                    clientMessage = tempMess[0];
+                } else if (tempMess.length > 2) {
+                    tempTaskString = clientMessage;
+                    clientMessage = "add";
+                }
+
+
                 processingSteps(clientMessage);
             }
         } catch (ClassNotFoundException | IOException e) {
@@ -91,15 +116,36 @@ public class ConnectController extends Thread implements ClientConnection {
                 connectionClose();
                 break;
             case "del":
+                System.out.println("delete " + taskName);
                 //delete task
+                deleteTask();
+                serializeDB.save(taskJournal.getTaskList());
+                sendTaskList();
                 break;
             case "add":
+                System.out.println("add " + tempTaskString);
                 //add task
+                addTask(tempTaskString);
+                serializeDB.save(taskJournal.getTaskList());
+                sendTaskList();
                 break;
             default:
                 //ignored
                 break;
         }
+    }
+
+    private void addTask(String taskString) {
+        String[] s = taskString.split("/");
+        System.out.println(s.toString());
+        Task task = new OneTimeTask(
+                s[0], s[1], s[2], s[3], s[4], s[5], s[6]
+        );
+        taskJournal.add(task);
+    }
+
+    private void deleteTask() {
+        taskJournal.delete(findTask(taskName));
     }
 
     /**
@@ -129,6 +175,15 @@ public class ConnectController extends Thread implements ClientConnection {
             e.printStackTrace();
         }
 
+    }
+
+    private Task findTask(String taskName) {
+        for (Task task : taskJournal.getTaskList()) {
+            if (task.getTaskName().equals(taskName)) {
+                return task;
+            }
+        }
+        return null;
     }
 
 }

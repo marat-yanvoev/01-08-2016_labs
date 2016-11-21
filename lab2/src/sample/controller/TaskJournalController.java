@@ -43,6 +43,7 @@ public class TaskJournalController implements TaskJournal{
 
     @Override
     public void delete(Task task) {
+        System.out.println("taskJournal delete");
         taskList.remove(task);
     }
 
@@ -74,4 +75,7 @@ public class TaskJournalController implements TaskJournal{
         }
     }
 
+    public void setTaskList(ObservableList<Task> taskList) {
+        this.taskList = taskList;
+    }
 }

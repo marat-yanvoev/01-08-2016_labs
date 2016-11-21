@@ -88,9 +88,13 @@ public class RootLayoutController {
 
     @FXML
     private void handleDelete() {
+        System.out.println("delete...");
         Task task = main.getTaskTable().getSelectionModel().getSelectedItem();
         if (task != null) {
+            System.out.println("delete " + task.getTaskName());
             taskJournal.delete(task);
+        } else {
+            System.out.println("nullllllll");
         }
     }
 
