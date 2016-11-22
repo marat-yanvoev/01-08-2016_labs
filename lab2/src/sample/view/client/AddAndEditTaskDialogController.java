@@ -5,6 +5,11 @@ import javafx.scene.control.Alert;
 import javafx.scene.control.DatePicker;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
+import javafx.scene.layout.Background;
+import javafx.scene.layout.BackgroundFill;
+import javafx.scene.layout.Border;
+import javafx.scene.layout.BorderStroke;
+import javafx.scene.paint.Paint;
 import javafx.stage.Stage;
 import sample.model.Task;
 
@@ -83,16 +88,21 @@ public class AddAndEditTaskDialogController {
 
         errorMessage = "";
 
-        if(taskDate.getValue() == null){
+        if (taskDate.getValue() == null){
             errorMessage += "Pick date!\n";
+        }
+
+        if (validTime()) {
+            errorMessage += "invalid time \n";
         }
 
         List<TextField> tfList = new ArrayList<>();
         tfList.add(taskName);
         tfList.add(taskContacts);
         for (TextField t : tfList) {
-            if(t.getText() == null || t.getLength() <= 0){
-                errorMessage += "no expected " + t.getClass().getName() + "\n";
+            if (t.getText() == null || t.getLength() <= 0){
+                errorMessage += "no expected " + t.getClass().getName() + " : error value " +
+                        t.getText() + "\n";
             }
         }
 
@@ -107,6 +117,23 @@ public class AddAndEditTaskDialogController {
             alert.showAndWait();
             return false;
         }
+    }
+
+    private boolean validTime() {
+        String hour = this.hour.getText();
+        String minute = this.minute.getText();
+        boolean result = true;
+        int ihour = Integer.parseInt(hour);
+        int iminute = Integer.parseInt(minute);
+        if((ihour < 0) || (ihour > 23)) {
+            errorMessage += "hours invalid\n";
+            result = false;
+        }
+        if ((iminute < 0) || (iminute > 59)) {
+            errorMessage += "hours invalid\n";
+            result = false;
+        }
+            return result;
     }
 
 }

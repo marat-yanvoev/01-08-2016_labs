@@ -30,6 +30,8 @@ public class ReloadTaskController extends Thread{
             tableView.itemsProperty().bind(tcpTask.valueProperty());
             tcpTask.setQuery("1");
             tcpTask.run();
+
+
         }
     }
 }

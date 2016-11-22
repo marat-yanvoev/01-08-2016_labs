@@ -62,6 +62,7 @@ public class SrlzDatabaseController implements DatabaseBehavior {
                                         Integer.toString(task.getTaskHour()), Integer.toString(task.getTaskMin()));
                 simpleTaskList.add(simpleTask);
             }
+            this.simpleTaskList = simpleTaskList;
             out.writeObject(simpleTaskList);
             out.close();
             out = null;

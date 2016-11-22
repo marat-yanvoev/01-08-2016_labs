@@ -63,7 +63,7 @@ public class Main extends Application {
         database.set(Database.DatabaseType.TCP);
         taskJournal.start();
         ReloadTaskController reloadTaskController = new ReloadTaskController(this);
-        //reloadTaskController.start();
+        reloadTaskController.start();
     }
 
     /**
