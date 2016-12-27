@@ -1,0 +1,11 @@
+<component name="ArtifactManager">
+  <artifact type="exploded-war" name="unnamed">
+    <output-path>$PROJECT_DIR$/out/artifacts/unnamed</output-path>
+    <root id="root">
+      <element id="module-output" name="testJavaEE" />
+      <element id="artifact" artifact-name="testJavaEE:war" />
+      <element id="dir-copy" path="$PROJECT_DIR$/target/less3-1.0-SNAPSHOT/META-INF" />
+      <element id="dir-copy" path="$PROJECT_DIR$/target/less3-1.0-SNAPSHOT/WEB-INF" />
+    </root>
+  </artifact>
+</component>
