@@ -8,7 +8,7 @@
 --%>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <jsp:include page="header.jsp" />
-
+<p>message: <c:out value="${message}"/></p>
 <form action="/objectTypes" method="post">
     <input class="form-control"  type="text" name="name" placeholder="Name type"/>
     <select class="form-control" size="1" name="parentId">
@@ -31,14 +31,19 @@
             <th>Edit</th>
         </tr>
     </thead>
+
     <tbody>
             <c:forEach var="type" items="${type_list}">
                 <tr>
                     <th><c:out value="${type.id}"/></th>
                     <th><c:out value="${type.name}"/></th>
                     <th><c:out value="${type.parentId}"/></th>
-                    <th><span class="glyphicon glyphicon-remove" aria-hidden="true"></span></th>
-                    <th><span class="glyphicon glyphicon-pencil" aria-hidden="true"></span></th>
+                    <th><a href="/objectTypes/del/${type.id}">
+                        <span class="glyphicon glyphicon-remove" aria-hidden="true"></span>
+                    </a></th>
+                    <th><a href="/objectTypes/edit/${type.id}">
+                        <span class="glyphicon glyphicon-pencil" aria-hidden="true"></span>
+                    </a></th>
                 </tr>
             </c:forEach>
     </tbody>

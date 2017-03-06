@@ -53,11 +53,36 @@ public class MysqlObjectTypeDAO implements ObjectTypeDAO{
 
     @Override
     public void update(NCObjectType objectType) {
-
+        try {
+            connection = Database.getInstance().getConnection();
+            preparedStatement = connection.prepareStatement(
+                    "UPDATE " + MysqlObjectTypeDAO.TABLE +
+                            " SET object_type_name = ?, parent_id = ?" +
+                            "WHERE object_type_id = ?");
+            preparedStatement.setString(1, objectType.getName());
+            preparedStatement.setString(2, objectType.getParentId());
+            preparedStatement.setString(3, objectType.getId());
+            preparedStatement.execute();
+            //ResultSet rs = preparedStatement.getResultSet();
+            connection.close();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
     }
 
     @Override
-    public void delete(NCObjectType objectType) {
+    public void delete(NCObjectType objectType){
+        try {
+            connection = Database.getInstance().getConnection();
+            preparedStatement = connection.prepareStatement(
+                    "DELETE FROM " + MysqlObjectTypeDAO.TABLE + " WHERE object_type_id = ?");
+            preparedStatement.setString(1, objectType.getId());
+            preparedStatement.execute();
+            //ResultSet rs = preparedStatement.getResultSet();
+            connection.close();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
 
     }
 
@@ -65,9 +90,11 @@ public class MysqlObjectTypeDAO implements ObjectTypeDAO{
     public NCObjectType getById(String uuid) throws SQLException {
         connection = Database.getInstance().getConnection();
         preparedStatement = connection.prepareStatement(
-                "SELECT * FROM " + MysqlObjectTypeDAO.TABLE + " WHERE object_type_id = " + uuid);
+                "SELECT * FROM " + MysqlObjectTypeDAO.TABLE + " WHERE object_type_id = ?");
+        preparedStatement.setString(1, uuid);
         preparedStatement.execute();
         ResultSet rs = preparedStatement.getResultSet();
+        rs.next();
         NCObjectType ncObjectType = new NCObjectType(rs.getString("object_type_id"), rs.getString("object_type_name"),
                 rs.getString("parent_id"));
         connection.close();
