@@ -7,7 +7,7 @@
   To change this template use File | Settings | File Templates.
 --%>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
-<jsp:include page="header.jsp" />
+<jsp:include page="../header.jsp" />
 <p>message: <c:out value="${message}"/></p>
 <form action="/objectTypes" method="post">
     <input class="form-control"  type="text" name="name" placeholder="Name type"/>
@@ -36,8 +36,8 @@
             <c:forEach var="type" items="${type_list}">
                 <tr>
                     <th><c:out value="${type.id}"/></th>
-                    <th><c:out value="${type.name}"/></th>
-                    <th><c:out value="${type.parentId}"/></th>
+                    <th><a href="/attributes/${type.id}"><c:out value="${type.name}"/></a></th>
+                    <th><a href="/attributes/${type.parentId}"><c:out value="${type.parentId}"/></a></th>
                     <th><a href="/objectTypes/del/${type.id}">
                         <span class="glyphicon glyphicon-remove" aria-hidden="true"></span>
                     </a></th>
@@ -49,4 +49,4 @@
     </tbody>
 
 </table>
-<jsp:include page="footer.jsp" />
+<jsp:include page="../footer.jsp" />

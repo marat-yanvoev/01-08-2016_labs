@@ -3,6 +3,7 @@ package ru.magazine.viewcontrollers;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.ModelAndView;
 import ru.magazine.dao.DAOFactory;
 import ru.magazine.dao.ObjectTypeDAO;
 import ru.magazine.entity.NCObjectType;
@@ -17,11 +18,11 @@ import java.util.List;
  * @author Evgeniy Tupikov
  */
 @Controller
-@RequestMapping("/objectTypes")
+@RequestMapping(value = "/objectTypes")
 public class ObjectTypeController {
 
     @RequestMapping(method = RequestMethod.GET)
-    public String index(Model model) {
+    public String view(Model model) {
         List<NCObjectType> objectTypeList = new ArrayList<NCObjectType>();
         ObjectTypeDAO objectTypeDAO = DAOFactory.getDaoFactory(DAOFactory.MYSQL).getObjectTypeDAO();
         try {
@@ -33,7 +34,7 @@ public class ObjectTypeController {
             model.addAttribute("info", e.toString());
         }
         System.out.println("view...");
-        return "objectTypes";
+        return "objectTypes/objectTypes";
     }
 
     @RequestMapping(method = RequestMethod.POST)
@@ -68,20 +69,22 @@ public class ObjectTypeController {
 
     @RequestMapping(value = "/edit/{id}", method = RequestMethod.GET)
     public String editType(@PathVariable("id") String id, Model model) {
-        ObjectTypeDAO objectTypeDAO = DAOFactory.getDaoFactory(DAOFactory.MYSQL).getObjectTypeDAO();
-        NCObjectType ncObjectType = new NCObjectType();
-        List<NCObjectType> objectTypeList = new ArrayList<NCObjectType>();
-        try {
-            ncObjectType = objectTypeDAO.getById(id);
-            objectTypeList = objectTypeDAO.getAll();
-            model.addAttribute("type_list", objectTypeList);
-            model.addAttribute("singleType", ncObjectType);
-            System.out.println("edit" + ncObjectType.getName());
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
+//        ObjectTypeDAO objectTypeDAO = DAOFactory.getDaoFactory(DAOFactory.MYSQL).getObjectTypeDAO();
+//        NCObjectType ncObjectType = new NCObjectType();
+//        List<NCObjectType> objectTypeList = new ArrayList<NCObjectType>();
+//        try {
+//            ncObjectType = objectTypeDAO.getById(id);
+//            objectTypeList = objectTypeDAO.getAll();
+//            model.addAttribute("type_list", objectTypeList);
+//            model.addAttribute("singleType", ncObjectType);
+//            System.out.println("edit" + ncObjectType.getName());
+//        } catch (SQLException e) {
+//            e.printStackTrace();
+//        }
+        System.out.println("edit");
+        model.addAttribute("id", id);
 
-        return "edit";
+        return "objectTypes/edit";
     }
 
     @RequestMapping(value = "/del/{id}", method = RequestMethod.GET)

@@ -4,6 +4,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.servlet.ModelAndView;
 import ru.magazine.entity.NCObject;
 
 import javax.servlet.ServletException;
@@ -23,14 +24,13 @@ import java.util.UUID;
  * @author Evgeniy Tupikov
  */
 @Controller
-@RequestMapping("/")
 public class IndexController {
 
-    @RequestMapping(method = RequestMethod.GET)
-    public String index(Model model) {
+    @RequestMapping(value = "/home", method = RequestMethod.GET)
+    public ModelAndView index(Model model) {
         model.addAttribute("time", Calendar.getInstance().getTime().toString());
         NCObject ncObject = new NCObject(UUID.randomUUID().toString(), "bomje", UUID.randomUUID().toString(), UUID.randomUUID().toString());
         model.addAttribute(ncObject);
-        return "index";
+        return new ModelAndView("objectTypes/edit");
     }
 }

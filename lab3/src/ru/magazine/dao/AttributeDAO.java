@@ -2,6 +2,7 @@ package ru.magazine.dao;
 
 import ru.magazine.entity.NCAttribute;
 
+import java.sql.SQLException;
 import java.util.List;
 
 /**
@@ -15,5 +16,5 @@ public interface AttributeDAO {
     void delete(NCAttribute attribute);
     NCAttribute getById(String uuid);
     NCAttribute getByName(String name);
-    List<NCAttribute> getByObjectType(String objectTypeUUID);
+    List<NCAttribute> getByObjectType(String objectTypeUUID) throws SQLException;
 }

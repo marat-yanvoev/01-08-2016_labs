@@ -3,6 +3,11 @@
     <output-path>$PROJECT_DIR$/target</output-path>
     <root id="archive" name="less3-1.0-SNAPSHOT.war">
       <element id="artifact" artifact-name="testJavaEE:war exploded" />
+      <element id="directory" name="WEB-INF">
+        <element id="directory" name="lib">
+          <element id="library" level="project" name="Hibernate 5.2.3-5.2.3" />
+        </element>
+      </element>
     </root>
   </artifact>
 </component>

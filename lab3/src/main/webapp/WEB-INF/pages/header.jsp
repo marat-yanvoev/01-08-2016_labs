@@ -39,7 +39,7 @@
                 <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
                     <ul class="nav navbar-nav">
                         <li><a href="/catalog">Catalog</a></li>
-                        <li><a href="/objectTypes">Object types</a></li>
+                        <li><a href="/objectTypes/">Object types</a></li>
                         <li><a href="/attributes">Attributes</a></li>
                     </ul>
                 </div>

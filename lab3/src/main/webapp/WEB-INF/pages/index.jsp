@@ -14,5 +14,6 @@
    <p>Time: ${time}</p>
 
     ID : ${NCObject.id}
+    <p>${mess}</p>
 
 <%@include file="footer.jsp"%>
